@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
-import { IndexerController } from './indexer.controller';
 import { IndexerService } from './indexer.service';
+import { ContractModule, EthersModule } from '@app/blockchain';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [],
-  controllers: [IndexerController],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ContractModule,
+    EthersModule
+  ],
   providers: [IndexerService],
 })
 export class IndexerModule {}

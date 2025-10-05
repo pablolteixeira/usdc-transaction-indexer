@@ -1,0 +1,12 @@
+# Ignore dependencies, we will install them in the container
+node_modules
+
+# Ignore build artifacts
+dist
+
+# Ignore environment files and logs
+.env
+*.log
+
+# Ignore git folder
+.git

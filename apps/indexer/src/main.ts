@@ -7,6 +7,6 @@ async function bootstrap() {
   
   const indexer = app.get(IndexerService);
 
-  await indexer.startListening();
+  indexer.start();
 }
 bootstrap();

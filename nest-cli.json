@@ -19,13 +19,51 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
+    "blockchain": {
+      "type": "library",
+      "root": "libs/blockchain",
+      "entryFile": "index",
+      "sourceRoot": "libs/blockchain/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/blockchain/tsconfig.lib.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "database": {
+      "type": "library",
+      "root": "libs/database",
+      "entryFile": "index",
+      "sourceRoot": "libs/database/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
+      }
+    },
     "indexer": {
       "type": "application",
       "root": "apps/indexer",
       "entryFile": "main",
       "sourceRoot": "apps/indexer/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/indexer/tsconfig.app.json"
+        "tsConfigPath": "apps/indexer/tsconfig.app.json",
+        "webpack": true,
+        "webpackConfigPath": "apps/indexer/webpack.config.ts"
+      }
+    },
+    "pruning": {
+      "type": "library",
+      "root": "libs/pruning",
+      "entryFile": "index",
+      "sourceRoot": "libs/pruning/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/pruning/tsconfig.lib.json"
       }
     },
     "usdc-transaction-indexer": {

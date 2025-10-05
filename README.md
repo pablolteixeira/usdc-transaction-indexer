@@ -1,98 +1,184 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# USDC Transfer Indexer
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a robust and fault-tolerant indexer for tracking USDC `Transfer` events on the Ethereum blockchain. It listens for new events, stores them in a persistent database, and exposes a REST API to query the indexed data. The system is designed for high reliability, capable of handling network interruptions, service restarts, and blockchain reorganizations without data loss or corruption.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+-   [Getting Started](#getting-started)
+    -   [Prerequisites](#prerequisites)
+    -   [Setup](#setup)
+-   [Running Tests](#running-tests)
+-   [API Documentation](#api-documentation)
+-   [System Design & Fault Tolerance](#system-design--fault-tolerance)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Getting Started
 
-## Project setup
+Follow these instructions to get the indexer and its associated services up and running on your local machine.
 
-```bash
-$ npm install
-```
+### Prerequisites
 
-## Compile and run the project
+-   [Docker](https://www.docker.com/products/docker-desktop/) and Docker Compose
+-   [Node.js](https://nodejs.org/en) and npm (for running tests)
+-   An Ethereum RPC provider URL (e.g., from Alchemy, Infura, or a self-hosted node)
 
-```bash
-# development
-$ npm run start
+### Setup
 
-# watch mode
-$ npm run start:dev
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/pablolteixeira/usdc-transaction-indexer.git
+    cd usdc-transaction-indexer
+    ```
 
-# production mode
-$ npm run start:prod
-```
+2.  **Configure environment variables:**
+    Create a `.env` file in the root of the project by copying the example file:
+    ```bash
+    cp .env.example .env
+    ```
+    Now, edit the `.env` file and add your Ethereum RPC provider URL:
+    ```env
+    RPC_URL="YOUR_ETHEREUM_RPC_PROVIDER_URL_HERE"
+    ```
 
-## Run tests
+3.  **Build and run the services:**
+    Use Docker Compose to build the application images and start the containers.
 
-```bash
-# unit tests
-$ npm run test
+    First, build the images. The `--no-cache` flag is recommended for the first build to ensure all dependencies are fetched cleanly.
+    ```bash
+    docker compose build --no-cache
+    ```
 
-# e2e tests
-$ npm run test:e2e
+    Next, start the services in detached mode. This will run the indexer, the API server, and the database in the background.
+    ```bash
+    docker compose up -d
+    ```
 
-# test coverage
-$ npm run test:cov
-```
+    The API should now be accessible at `http://localhost:3000`.
 
-## Deployment
+## Running Tests
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The project includes a suite of tests to verify the functionality of its components. To run the tests, execute the following command from the project's root directory:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
+npm run test
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+This will run all unit and integration tests and output the results to your console.
 
-## Resources
+## API Documentation
 
-Check out a few resources that may come in handy when working with NestJS:
+This document provides an overview of the USDC Indexer API, its endpoints, and how to interact with them.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Interactive API Console (Swagger UI)
 
-## Support
+The easiest way to explore and test the API is through our interactive Swagger UI documentation. Once the application is running, this interface is available at:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**[http://localhost:3000/api-docs](http://localhost:3000/api-docs)**
 
-## Stay in touch
+The interactive console allows you to:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+-   View a complete list of available API endpoints.
+-   See detailed information about each endpoint, including required parameters and request body structures.
+-   Inspect example request and response models.
+-   Execute live API requests directly from your browser.
 
-## License
+### Base URL
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+All API endpoints are available under the following base URL:
+
+```
+http://localhost:3000/api/v1
+```
+
+### Rate Limiting
+
+To ensure service stability, the API employs rate limiting. If you send too many requests in a short period, you will receive an `HTTP 429 Too Many Requests` response.
+
+The response headers will indicate the current limit (`X-RateLimit-Limit`), the number of requests remaining (`X-RateLimit-Remaining`), and when you can try again (`Retry-After`).
+
+### Common Data Models
+
+#### Transfer Object
+
+Represents a single USDC transfer event.
+
+```json
+{
+    "id": 123,
+    "fromAddress": "0x...",
+    "toAddress": "0x...",
+    "amount": "10000000",
+    "transactionHash": "0x...",
+    "blockNumber": 18000000,
+    "blockTimestamp": "2023-10-27T10:30:00.000Z",
+    "logIndex": 45
+}
+```
+
+#### Paginated Response
+
+Endpoints that return a list of items will use a paginated structure.
+
+```json
+{
+    "data": [
+        // ... an array of objects (e.g., Transfer Objects)
+    ],
+    "meta": {
+        "total": 1234,
+        "page": 1,
+        "limit": 20,
+        "totalPages": 62
+    }
+}
+```
+
+### Core Endpoints
+
+This is a high-level overview of the main API functionalities.
+
+| Method | Endpoint                       | Description                                            | Authentication |
+| :----- | :----------------------------- | :----------------------------------------------------- | :------------- |
+| `GET`  | `/transfers`                   | Query and filter all indexed transfers. Supports pagination. | Public         |
+| `GET`  | `/transfers/balance/{address}` | Get the calculated USDC balance for a specific wallet. | Public         |
+| `GET`  | `/transfers/history/{address}` | Get the transfer history for a specific wallet.        | Public         |
+
+## System Design & Fault Tolerance
+
+This indexer is designed for high reliability and guarantees data integrity by implementing several key fault tolerance mechanisms.
+
+### 1. Resume Indexing from Last Successful Block
+
+The core of the indexer's reliability is its ability to survive crashes and restarts without skipping or duplicating data.
+
+-   **Problem:** A simple indexer that stores its progress in memory will suffer from "amnesia" on restart, causing it to re-process old blocks or miss blocks that occurred during downtime.
+-   **Solution:** The indexer's "memory" is stored persistently in the database in an `IndexerState` table.
+-   **Mechanism:**
+    1.  At the start of every processing cycle, the indexer first reads the `lastProcessedBlock` from the database.
+    2.  After fetching and processing new data, it saves both the new `Transfer` records and the updated `lastProcessedBlock` state within a single **atomic database transaction**.
+-   **Outcome:** This guarantees that the state is only updated if the data is successfully saved. If the service crashes at any point, it will simply restart, read the last known good state from the database, and continue exactly where it left off.
+
+### 2. Handle Network Interruptions Gracefully
+
+Network calls to the blockchain RPC provider are inherently unreliable. The indexer uses a two-layer defense to handle these failures.
+
+-   **Mechanism (Layer 1): Retry Logic with Exponential Backoff**
+    -   Every RPC call (e.g., `getBlock`, `queryFilter`) is wrapped in a `retryRpcCall` helper function.
+    -   If a call fails with a transient network error (like a timeout, rate limit, or DNS issue), the helper will automatically wait and try again.
+    -   The delay between retries increases exponentially (e.g., 1s, 2s, 4s...) to give the network or provider time to recover. This handles short-lived interruptions within a single processing cycle.
+
+-   **Mechanism (Layer 2): The Polling Loop**
+    -   If the immediate retries fail after several attempts, the entire processing cycle is aborted, and an error is logged.
+    -   The indexer then simply waits for the next scheduled poll (e.g., 20 seconds later) to try the whole process again, starting from the last successful block stored in the database.
+-   **Outcome:** The indexer can survive both brief network blips and longer outages (minutes or hours) without requiring manual intervention.
+
+### 3. Manage Blockchain Reorganizations (Reorgs)
+
+Blockchains are not always final. A reorg can occur where the last few blocks are discarded and replaced with a different version of history, leaving stale data in the indexer's database.
+
+-   **Problem:** The indexer's database can fall out of sync with the canonical chain, containing data from orphaned (discarded) blocks.
+-   **Solution:** A "Detect and Rollback" strategy is implemented.
+-   **Mechanism:**
+    1.  **Detection:** In addition to the block number, the indexer stores the `lastProcessedBlockHash` in its state. At the start of each cycle, it verifies that this hash still exists on the live chain at the expected block height. A mismatch indicates a reorg.
+    2.  **Rollback:** When a reorg is detected, the `handleReorg` function is triggered. It finds a recent, stable "common ancestor" block that exists on both chains. It then runs a `DELETE` query to remove all transfer records from the database that came after this ancestor block and resets its state.
+-   **Outcome:** The indexer automatically self-heals by purging stale data and reprocessing the new, correct blocks, ensuring the database always reflects the true state of the blockchain.
